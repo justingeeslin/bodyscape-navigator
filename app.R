@@ -18,7 +18,7 @@ library('plotrix')
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Bodymaps Navigator"),
+    titlePanel("Bodyscape Navigator"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
