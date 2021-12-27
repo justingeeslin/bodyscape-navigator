@@ -6,6 +6,10 @@
 #
 #    http://shiny.rstudio.com/
 #
+# https://www.clintzeagler.com/where-it-body-maps/
+# https://commons.wikimedia.org/wiki/File:Langer%27s_lines_male_back_3d-shaded_lying.svg
+# https://commons.wikimedia.org/wiki/File:Langer%27s_lines_female_front_3d-shaded.svg
+# https://commons.wikimedia.org/wiki/File:Langer%27s_lines_female_back_3d-shaded.svg
 
 library(shiny)
 library('plotrix')
