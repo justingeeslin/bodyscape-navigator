@@ -53,40 +53,24 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           htmlOutput("bodymapSVG")
         )
     )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        plot(
-            1:5,
-            seq(1,25,length=5),
-            type="n",
-            xlab="",
-            ylab="",
-            main="Body Map",
-            axes=FALSE, 
-            frame.plot=FALSE,
-            labels = FALSE
-            )
+    
+    output$bodymapSVG <- renderUI({
         
         ## -- Config --
         ## When to turn things yellow
         yellowThreshold = 0.75
         ## Color Scheme
-        wearableColor = "green"
+        wearableColor = "#00FF50"
         warningColor = "yellow"
         unWearableColor = "red"
-        
-        ## Circle examples
-        # draw.circle(2,4,c(1,0.66,0.33),border="purple",
-        #             col=c("#ff00ff","#ff77ff","#ffccff"),lty=1,lwd=1)
-        # draw.circle(2.5,8,0.6,border="red",lty=3,lwd=3)
-        # draw.circle(3.5,8,0.8,border="blue",lty=2,lwd=2)
+
         
         ## Head
         headColor = wearableColor
@@ -97,9 +81,43 @@ server <- function(input, output) {
         else if (input$weight >= (weightThreshold * yellowThreshold) ) {
             headColor = warningColor    
         }
-        draw.circle(3,23.5,0.1,border=headColor,col=headColor,lty=1,
-                    density=5,angle=30,lwd=10)
         
+        ## Wrist
+        wristColor = wearableColor
+        weightThreshold = 0.5
+        if (input$weight >= weightThreshold) {
+            wristColor = unWearableColor    
+        }
+        else if (input$weight >= (weightThreshold * yellowThreshold) ) {
+            wristColor = warningColor    
+        }
+        
+        ## Feet
+        footColor = wearableColor
+        weightThreshold = 5
+        if (input$weight >= weightThreshold) {
+            footColor = unWearableColor    
+        }
+        else if (input$weight >= (weightThreshold * yellowThreshold) ) {
+            footColor = warningColor    
+        }
+        
+        
+        return(HTML(paste0('
+<svg width="609px" height="100vh" viewBox="0 0 609 1799" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Body" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Male-Front" transform="translate(-76.000000, -2.000000)">
+            <g id="Regions" transform="translate(77.000000, 2.000000)">
+                <ellipse id="Head" fill="', headColor, '" cx="296.5" cy="36.5" rx="72.5" ry="36.5"></ellipse>
+                <rect id="foot-l" stroke="#979797" fill="', footColor, '" x="100" y="1604" width="119" height="194"></rect>
+                <rect id="foot-r" stroke="#979797" fill="', footColor, '" x="376" y="1604" width="119" height="194"></rect>
+                <ellipse id="wrist-l" stroke="#979797" fill="', wristColor, '" cx="43.5" cy="834" rx="43.5" ry="46"></ellipse>
+                <ellipse id="wrist-r" stroke="#979797" fill="', wristColor, '" cx="563.5" cy="834" rx="43.5" ry="46"></ellipse>
+            </g>
+        </g>
+    </g>
+</svg>
+                    ')))
         
     })
 }
