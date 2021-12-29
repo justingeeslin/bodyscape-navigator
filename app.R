@@ -26,17 +26,16 @@ ui <- fluidPage(
             checkboxGroupInput("biometrics", 
                                "Biometrics:",
                                c(
-                                 "Heart monitoring",
-                                 "Blood pressure"
+                                 "Heart monitoring"
                                )
             ),
-            checkboxGroupInput("dataCollection", 
-                               "Motion Data Collection:",
-                               c("Whole Body Motion" = "cyl",
-                                 "Limb Motion" = "am",
-                                 "Movement within Environment" = "gear"
-                               )
-            ),
+            # checkboxGroupInput("dataCollection", 
+            #                    "Motion Data Collection:",
+            #                    c("Whole Body Motion" = "cyl",
+            #                      "Limb Motion" = "am",
+            #                      "Movement within Environment" = "gear"
+            #                    )
+            # ),
             # radioButtons("where", "Where it should be worn:",
             #              c(
             #                 "You tell me" = "undetermined",
@@ -53,11 +52,11 @@ ui <- fluidPage(
                         min = 0.1,
                         max = 20,
                         value = 5),
-            sliderInput("size",
-                        "Size (cm):",
-                        min = 1,
-                        max = 50,
-                        value = 30),
+            # sliderInput("size",
+            #             "Size (cm):",
+            #             min = 1,
+            #             max = 50,
+            #             value = 30),
             
         ),
 
