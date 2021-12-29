@@ -96,7 +96,40 @@ server <- function(input, output) {
         }
         
         ## Default set, no data collection just a wearable
-        ## Head
+        
+        ## -- Weight thresholds --
+        if (input$weight < 0.5) {
+            
+        }
+        else if (input$weight < 2.0) {
+            earsColor = fingertipsColor = unWearableColor
+        }
+        else if (input$weight < 5.0) {
+            earsColor = fingertipsColor = unWearableColor
+        }
+        else if (input$weight < 9.0) {
+            earsColor = fingertipsColor = unWearableColor
+            bicepColor = unWearableColor
+        }
+        else if (input$weight < 13.0) {
+            headColor = unWearableColor
+            earsColor = fingertipsColor = unWearableColor
+            thighsColor = unWearableColor
+            bicepColor = unWearableColor
+        }
+        else if (input$weight < 17.0) {
+            headColor = unWearableColor 
+            earsColor = fingertipsColor = unWearableColor
+            thighsColor = unWearableColor
+            bicepColor = unWearableColor
+        }
+        else {
+            headColor = unWearableColor
+            earsColor = fingertipsColor = unWearableColor
+            thighsColor = unWearableColor
+            bicepColor = unWearableColor
+        }
+        
         weightThreshold = 9
         if (input$weight >= weightThreshold) {
             headColor = unWearableColor    
