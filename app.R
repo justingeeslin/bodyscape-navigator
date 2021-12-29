@@ -23,6 +23,20 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
+            checkboxGroupInput("biometrics", 
+                               "Biometrics:",
+                               c(
+                                 "Heart monitoring",
+                                 "Blood pressure"
+                               )
+            ),
+            checkboxGroupInput("dataCollection", 
+                               "Motion Data Collection:",
+                               c("Whole Body Motion" = "cyl",
+                                 "Limb Motion" = "am",
+                                 "Movement within Environment" = "gear"
+                               )
+            ),
             # radioButtons("where", "Where it should be worn:",
             #              c(
             #                 "You tell me" = "undetermined",
@@ -44,15 +58,7 @@ ui <- fluidPage(
                         min = 1,
                         max = 50,
                         value = 30),
-            checkboxGroupInput("dataCollection", 
-                               "Data Collection & Biometrics:",
-                               c("Whole Body Motion" = "cyl",
-                                 "Limb Motion" = "am",
-                                 "Movement within Environment" = "gear",
-                                 "Heart monitoring",
-                                 "Blood Pressure"
-                                 )
-                                ),
+            
         ),
 
         # Show a plot of the generated distribution
@@ -76,8 +82,21 @@ server <- function(input, output) {
         unWearableColor = "red"
 
         
+        ## -- Hide or Show the regions for the data collection 
+        wristVisibility = feetVisibility = headVisibility = "hidden"
+        bicepVisibility = chestHeartVisibility = thighsVisibility = earsVisibility = fingertipsVisibility = "hidden"  
+        
+        footColor = wristColor = headColor = bicepColor = chestHeartColor = thighsColor = earsColor = fingertipsColor = wearableColor   
+        if ("Heart monitoring" %in% input$biometrics) {
+            bicepVisibility = chestHeartVisibility = thighsVisibility = earsVisibility = fingertipsVisibility = "visible"    
+        }
+        else if (length(input$biometrics) < 1) {
+            wristVisibility = feetVisibility = headVisibility = "visible"
+         
+        }
+        
+        ## Default set, no data collection just a wearable
         ## Head
-        headColor = wearableColor
         weightThreshold = 9
         if (input$weight >= weightThreshold) {
             headColor = unWearableColor    
@@ -87,7 +106,6 @@ server <- function(input, output) {
         }
         
         ## Wrist
-        wristColor = wearableColor
         weightThreshold = 0.5
         if (input$weight >= weightThreshold) {
             wristColor = unWearableColor    
@@ -97,7 +115,6 @@ server <- function(input, output) {
         }
         
         ## Feet
-        footColor = wearableColor
         weightThreshold = 5
         if (input$weight >= weightThreshold) {
             footColor = unWearableColor    
@@ -105,6 +122,11 @@ server <- function(input, output) {
         else if (input$weight >= (weightThreshold * yellowThreshold) ) {
             footColor = warningColor    
         }
+        
+        
+        ## -- Color the regions --
+        
+        
         
         
         return(HTML(paste0(
@@ -120,13 +142,38 @@ server <- function(input, output) {
             </mask>
             <use id="Shape" fill="#9B9B9B" transform="translate(377.502613, 899.973232) rotate(90.000000) translate(-377.502613, -899.973232) " xlink:href="#path-to33g84vq4-1"></use>
             <g id="Regions" data-undo-me-mask="url(#mask-to33g84vq4-2)">
+            
                 <g transform="translate(77.000000, 2.000000)">
-                     <ellipse id="Head" fill="', headColor, '" cx="296.5" cy="36.5" rx="72.5" ry="36.5"  ></ellipse>
-                <rect id="foot-l" stroke="#979797" fill="', footColor, '" x="100" y="1604" width="119" height="194"  ></rect>
-                <rect id="foot-r" stroke="#979797" fill="', footColor, '" x="376" y="1604" width="119" height="194"></rect>
-                <ellipse id="wrist-l" stroke="#979797" fill="', wristColor, '" cx="43.5" cy="834" rx="43.5" ry="46"></ellipse>
-                <ellipse id="wrist-r" stroke="#979797" fill="', wristColor, '" cx="563.5" cy="834" rx="43.5" ry="46"></ellipse>
+                     <ellipse id="Head" visibility="', headVisibility, '" fill="', headColor, '" cx="296.5" cy="36.5" rx="72.5" ry="36.5" stroke="#979797" ></ellipse>
+                <rect id="foot-l" stroke="#979797" visibility="', feetVisibility, '" fill="', footColor, '" x="100" y="1604" width="119" height="194"  ></rect>
+                <rect id="foot-r" stroke="#979797" visibility="', feetVisibility, '" fill="', footColor, '" x="376" y="1604" width="119" height="194"></rect>
+                <ellipse id="wrist-l" stroke="#979797" visibility="', wristVisibility, '" fill="', wristColor, '" cx="43.5" cy="834" rx="43.5" ry="46"></ellipse>
+                <ellipse id="wrist-r" stroke="#979797" visibility="', wristVisibility, '" fill="', wristColor, '" cx="563.5" cy="834" rx="43.5" ry="46"></ellipse>
                 </g>
+                
+                <g transform="translate(-110.000000, 0.000000)">
+                <!-- Paste new elements from sketch here -->
+            
+        <rect id="chest-heart-monitoring" stroke="#979797" visibility="', chestHeartVisibility, '" fill="', chestHeartColor, '" x="342" y="396" width="286" height="161"></rect>    
+
+<rect id="l-thigh" stroke="#979797" visibility="', thighsVisibility, '" fill="', thighsColor, '" x="289" y="1011" width="186" height="106"></rect>
+                    <rect id="r-thigh" stroke="#979797" visibility="', thighsVisibility, '" fill="', thighsColor, '" x="486" y="1011" width="186" height="106"></rect>
+                    <rect id="r-ear" stroke="#979797" visibility="', earsVisibility, '" fill="', earsColor, '" x="553" y="96" width="186" height="106"></rect>
+                    <rect id="l-ear" stroke="#979797" visibility="', earsVisibility, '" fill="', earsColor, '" x="223" y="96" width="186" height="106"></rect>
+                    
+                    <g id="l-fingertips" transform="translate(0.000000, 860.000000)" fill="', fingertipsColor, '" visibility="', fingertipsVisibility, '" stroke="#979797">
+                        <polygon points="118 106 252 106 252 212 118 212"></polygon>
+                        <polygon id="l-thumb" points="0 0 134 0 134 106 0 106"></polygon>
+                    </g>
+                    <g id="r-fingertips" transform="translate(846.000000, 966.000000) scale(1, -1) translate(-846.000000, -966.000000) translate(720.000000, 860.000000)" visibility="', fingertipsVisibility, '" fill="', fingertipsColor, '" stroke="#979797">
+                        <polygon id="l-fingertips" points="118 106 252 106 252 212 118 212"></polygon>
+                        <polygon id="l-thumb" points="0 0 134 0 134 106 0 106"></polygon>
+                    </g>
+                    
+                    <rect id="r-bicep" stroke="#979797" visibility="', bicepVisibility, '" fill="', bicepColor, '" x="621" y="472" width="96" height="106"></rect>
+                    <rect id="l-bicep" stroke="#979797" visibility="', bicepVisibility, '" fill="', bicepColor, '" x="252" y="472" width="96" height="106"></rect>
+                </g>
+                
             </g>
         </g>
     </g>
