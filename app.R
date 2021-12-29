@@ -79,7 +79,7 @@ server <- function(input, output) {
         ## Color Scheme
         wearableColor = "#00FF50"
         warningColor = "yellow"
-        unWearableColor = "red"
+        unWearableColor = "transparent"
 
         
         ## -- Hide or Show the regions for the data collection 
