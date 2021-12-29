@@ -122,12 +122,14 @@ server <- function(input, output) {
             earsColor = fingertipsColor = unWearableColor
             thighsColor = unWearableColor
             bicepColor = unWearableColor
+            chestHeartColor = unWearableColor
         }
         else {
             headColor = unWearableColor
             earsColor = fingertipsColor = unWearableColor
             thighsColor = unWearableColor
             bicepColor = unWearableColor
+            chestHeartColor = unWearableColor
         }
         
         weightThreshold = 9
