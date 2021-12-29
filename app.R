@@ -98,7 +98,7 @@ server <- function(input, output) {
         
         ## -- Weight thresholds --
         if (input$weight < 0.5) {
-            
+            ## Almost everything is wearable at half a pound
         }
         else if (input$weight < 2.0) {
             earsColor = fingertipsColor = unWearableColor
