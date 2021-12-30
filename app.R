@@ -187,9 +187,9 @@ server <- function(input, output) {
             <g id="Regions" mask="url(#mask-to33g84vq4-2)">
             
                 <g transform="translate(77.000000, 2.000000)">
-                     <ellipse id="Head" visibility="', headVisibility, '" fill="', headColor, '" cx="296.5" cy="36.5" rx="72.5" ry="36.5" stroke="#979797" ></ellipse>
-                <rect id="foot-l" stroke="#979797" visibility="', feetVisibility, '" fill="', footColor, '" x="100" y="1604" width="119" height="194"  ></rect>
-                <rect id="foot-r" stroke="#979797" visibility="', feetVisibility, '" fill="', footColor, '" x="376" y="1604" width="119" height="194"></rect>
+                     <ellipse id="Head"  cx="296.5" cy="36.5" rx="72.5" ry="36.5" stroke="#979797" ></ellipse>
+                <rect id="foot-l" stroke="#979797" x="100" y="1604" width="119" height="194"  ></rect>
+                <rect id="foot-r" stroke="#979797" x="376" y="1604" width="119" height="194"></rect>
                 <ellipse id="wrist-l" stroke="#979797" visibility="', wristVisibility, '" fill="', wristColor, '" cx="43.5" cy="834" rx="43.5" ry="46"></ellipse>
                 <ellipse id="wrist-r" stroke="#979797" visibility="', wristVisibility, '" fill="', wristColor, '" cx="563.5" cy="834" rx="43.5" ry="46"></ellipse>
                 </g>
@@ -197,12 +197,12 @@ server <- function(input, output) {
                 <g transform="translate(-110.000000, 0.000000)">
                 <!-- Paste new elements from sketch here -->
             
-        <rect id="chest-heart-monitoring" stroke="#979797" visibility="', chestHeartVisibility, '" fill="', chestHeartColor, '" x="342" y="396" width="286" height="161"></rect>    
+        <rect id="chest-heart-monitoring" stroke="#979797" x="342" y="396" width="286" height="161"></rect>    
 
-<rect id="l-thigh" stroke="#979797" visibility="', thighsVisibility, '" fill="', thighsColor, '" x="289" y="1011" width="186" height="106"></rect>
-                    <rect id="r-thigh" stroke="#979797" visibility="', thighsVisibility, '" fill="', thighsColor, '" x="486" y="1011" width="186" height="106"></rect>
-                    <rect id="r-ear" stroke="#979797" visibility="', earsVisibility, '" fill="', earsColor, '" x="553" y="96" width="186" height="106"></rect>
-                    <rect id="l-ear" stroke="#979797" visibility="', earsVisibility, '" fill="', earsColor, '" x="223" y="96" width="186" height="106"></rect>
+<rect id="l-thigh" stroke="#979797" x="289" y="1011" width="186" height="106"></rect>
+                    <rect id="r-thigh" stroke="#979797" x="486" y="1011" width="186" height="106"></rect>
+                    <rect id="r-ear" stroke="#979797" x="553" y="96" width="186" height="106"></rect>
+                    <rect id="l-ear" stroke="#979797" x="223" y="96" width="186" height="106"></rect>
                     
                     <g id="l-fingertips" transform="translate(0.000000, 860.000000)" fill="', fingertipsColor, '" visibility="', fingertipsVisibility, '" stroke="#979797">
                         <polygon points="118 106 252 106 252 212 118 212"></polygon>
@@ -213,14 +213,29 @@ server <- function(input, output) {
                         <polygon id="l-thumb" points="0 0 134 0 134 106 0 106"></polygon>
                     </g>
                     
-                    <rect id="r-bicep" stroke="#979797" visibility="', bicepVisibility, '" fill="', bicepColor, '" x="621" y="472" width="96" height="106"></rect>
-                    <rect id="l-bicep" stroke="#979797" visibility="', bicepVisibility, '" fill="', bicepColor, '" x="252" y="472" width="96" height="106"></rect>
+                    <rect id="r-bicep" stroke="#979797" x="621" y="472" width="96" height="106"></rect>
+                    <rect id="l-bicep" stroke="#979797" x="252" y="472" width="96" height="106"></rect>
                 </g>
                 
             </g>
         </g>
     </g>
 </svg>
+        ','
+        <style>
+            #Head { visibility:', headVisibility, ';fill:', headColor, ';  }
+        
+            #l-ear, #r-ear { visibility:', earsVisibility, ';fill:', earsColor, ';  }
+            
+            #chest-heart-monitoring { visibility:', chestHeartVisibility, ';fill:', chestHeartColor, ';  }
+        
+            #r-bicep, #l-bicep { visibility:', bicepVisibility, ';fill:', bicepColor, ';  }
+            
+            #r-thigh, #l-thigh { visibility:', thighsVisibility, ';fill:', thighsColor, ';  }
+            
+            #foot-l, #foot-r { visibility:', feetVisibility, ';fill:', footColor, ';  }
+        </style>
+        
         ')))
         
     })
