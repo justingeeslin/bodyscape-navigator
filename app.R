@@ -57,7 +57,7 @@ ui <- fluidPage(
             #             min = 1,
             #             max = 50,
             #             value = 30),
-            
+            checkboxInput("touchInteractive", "Should accept touch gestures", FALSE)
         ),
 
         # Show a plot of the generated distribution
@@ -92,6 +92,14 @@ server <- function(input, output) {
         else if (length(input$biometrics) < 1) {
             wristVisibility = feetVisibility = headVisibility = "visible"
          
+        }
+        
+        ## If it accepts touch interactions..
+        if (input$touchInteractive) {
+            ## .. hide the thighs and breast area
+            thighsVisibility = "hidden"
+            
+            chestHeartVisibility = "hidden"
         }
         
         ## Default set, no data collection just a wearable
