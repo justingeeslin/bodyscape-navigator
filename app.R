@@ -57,7 +57,18 @@ ui <- fluidPage(
             #             min = 1,
             #             max = 50,
             #             value = 30),
-            checkboxInput("touchInteractive", "Should accept touch gestures", FALSE)
+            checkboxGroupInput("input", 
+                               "Input:",
+                               c(
+                                   "Should accept touch gestures" = "touch"
+                               )
+            ),
+           checkboxGroupInput("output", 
+                              "Output:",
+                              c(
+                                  "Haptic display" = "haptic"
+                              )
+           )
         ),
 
         # Show a plot of the generated distribution
@@ -95,7 +106,7 @@ server <- function(input, output) {
         }
         
         ## If it accepts touch interactions..
-        if (input$touchInteractive) {
+        if ("touch" %in% input$input) {
             ## .. hide the thighs and breast area
             thighsVisibility = "hidden"
             
