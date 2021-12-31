@@ -133,6 +133,26 @@ server <- function(input, output) {
             ""
             )
 
+        partsWeight = c(
+            .5,
+            .5,
+            .5,
+            .5,
+            .5,
+            9,
+            5,
+            .5,
+            .5,
+            .5,
+            .5,
+            .5,
+            .5,
+            9,
+            5,
+            2,
+            .5
+            )
+
         bodyData = data.frame()
 
         ## Set everything to visible at first
@@ -141,11 +161,11 @@ server <- function(input, output) {
             bodyData[i, "visibility"] = "visible"
             bodyData[i, "color"] = wearableColor
             bodyData[i, "CSSSelector"] = partsSelector[index]
+            bodyData[i, "weight"] = partsWeight[index]
             index = index + 1;
         }
 
         hideAll = function() {
-            print("Hidding..")
             for (i in parts) {
                 bodyData[i, "visibility"] = "hidden"
             }
@@ -211,75 +231,26 @@ server <- function(input, output) {
             
         }
         
-        ## Default set, no data collection just a wearable
-        
-        ## -- Weight thresholds --
-        if (input$weight < 0.5) {
-            ## Almost everything is wearable at half a pound
+              
+        for( i in parts) {
+            
+            if (bodyData[i,]$visibility == "visible") {
+                if (bodyData[i,]$weight <= input$weight ) {
+                    ## Must hide it.
+                    print("Hiding")
+                    bodyData[i,]$visibility = "hidden"
+                    print(bodyData[i,])
+                    
+                }
+                else {
+                    ## All good. Continue being visible
+                }
+            }
+
         }
-        else if (input$weight < 2.0) {
-            earsColor = fingertipsColor = unWearableColor
-        }
-        else if (input$weight < 5.0) {
-            earsColor = fingertipsColor = unWearableColor
-        }
-        else if (input$weight < 9.0) {
-            earsColor = fingertipsColor = unWearableColor
-            bicepColor = unWearableColor
-        }
-        else if (input$weight < 13.0) {
-            headColor = unWearableColor
-            earsColor = fingertipsColor = unWearableColor
-            thighsColor = unWearableColor
-            bicepColor = unWearableColor
-        }
-        else if (input$weight < 17.0) {
-            headColor = unWearableColor 
-            earsColor = fingertipsColor = unWearableColor
-            thighsColor = unWearableColor
-            bicepColor = unWearableColor
-            chestHeartColor = unWearableColor
-        }
-        else {
-            headColor = unWearableColor
-            earsColor = fingertipsColor = unWearableColor
-            thighsColor = unWearableColor
-            bicepColor = unWearableColor
-            chestHeartColor = unWearableColor
-        }
-        
-        weightThreshold = 9
-        if (input$weight >= weightThreshold) {
-            headColor = unWearableColor    
-        }
-        else if (input$weight >= (weightThreshold * yellowThreshold) ) {
-            headColor = warningColor    
-        }
-        
-        ## Wrist
-        weightThreshold = 0.5
-        if (input$weight >= weightThreshold) {
-            wristColor = unWearableColor    
-        }
-        else if (input$weight >= (weightThreshold * yellowThreshold) ) {
-            wristColor = warningColor    
-        }
-        
-        ## Feet
-        weightThreshold = 5
-        if (input$weight >= weightThreshold) {
-            footColor = unWearableColor    
-        }
-        else if (input$weight >= (weightThreshold * yellowThreshold) ) {
-            footColor = warningColor    
-        }
-        
-        
-        ## -- Color the regions --
         
         ## -- Compose the styles to be output --
         styles = ""
-        print(bodyData)
         for ( i in parts) {
             styles = paste(styles, paste(
                 bodyData[i, "CSSSelector"],
