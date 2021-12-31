@@ -97,6 +97,9 @@ server <- function(input, output) {
         parts = c(
                 "head",
                 "ears",
+                "face",
+                "innerFace",
+                "lips",
                 "chestHeart",
                 "bicep",
                 "forearm",
@@ -107,11 +110,15 @@ server <- function(input, output) {
                 "fingertips",
                 "thighs",
                 "feet",
+                "toes",
                 "pregAb"
                 )
         partsSelector = c(
             "#Head",
             "#l-ear, #r-ear",
+            "#face",
+            "#innerFace",
+            "#lips",
             "#chest-heart-monitoring",
             "#r-bicep, #l-bicep",
             "#r-forearm, #l-forearm",
@@ -119,10 +126,11 @@ server <- function(input, output) {
             "#wrist-r, #wrist-l",
             "#whole-right-hand, #whole-left-hand",
             "#r-fingers, #l-fingers",
-            "#r-fingertips, #l-fingertips",
+            "#r-fingertips, #r-fingertip-thumb, #r-fingertip-pinky, #l-fingertips, #l-fingertip-thumb, #l-fingertip-pinky",
             "#r-thigh, #l-thigh",
             "#foot-l, #foot-r",
-            "#Pregnancy-Abdomen"
+            "#toes",
+            ""
             )
 
         bodyData = data.frame()
@@ -181,8 +189,10 @@ server <- function(input, output) {
                 ## This is probably too limiting.. SHoulders?
                 "forearm", 
                 "forearmLow",
+                "wrist",
                 "wholeHand",
                 "fingers",
+                "fingertips",
 
                 "footsoles",
                 "toes"
@@ -312,6 +322,20 @@ server <- function(input, output) {
                     <rect id="r-thigh" stroke="#979797" stroke-width="1" fill="#9013FE" x="421.058224" y="1011" width="186" height="106"></rect>
                     <rect id="r-ear" stroke="#979797" stroke-width="1" fill="#9013FE" x="488.058224" y="96" width="186" height="106"></rect>
                     <rect id="l-ear" stroke="#979797" stroke-width="1" fill="#9013FE" x="158.058224" y="96" width="186" height="106"></rect>
+                     <g id="right-hand" stroke="none" fill="none" transform="translate(722.058224, 956.267472) scale(1, -1) translate(-722.058224, -956.267472) translate(643.623784, 860.000000)">
+                        <polygon id="r-fingertip-thumb" stroke="#979797" fill="#9013FE" points="129.43444 133.534945 154.43444 133.534945 154.43444 192.534945 129.43444 192.534945"></polygon>
+                        <polygon id="r-fingertips" stroke="#979797" fill="#9013FE" transform="translate(85.681373, 41.489022) rotate(15.000000) translate(-85.681373, -41.489022) " points="18.681373 22.4890217 152.681373 22.4890217 152.681373 60.4890217 18.681373 60.4890217"></polygon>
+                        <polygon id="r-fingertip-pinky" stroke="#979797" fill="#9013FE" transform="translate(37.297149, 48.194755) rotate(15.000000) translate(-37.297149, -48.194755) " points="15.297149 28.1947553 59.297149 28.1947553 59.297149 68.1947553 15.297149 68.1947553"></polygon>
+                        <polygon id="r-fingers" stroke="#979797" fill="#9013FE" transform="translate(78.434440, 68.534945) rotate(15.000000) translate(-78.434440, -68.534945) " points="11.4344398 15.5349448 145.43444 15.5349448 145.43444 121.534945 11.4344398 121.534945"></polygon>
+                    </g>
+                    
+<g id="left-hand" stroke="none" fill="none" transform="translate(42.058224, 873.534945)">
+                        <polygon id="l-fingertip-thumb" stroke="#979797" fill="#9013FE" points="0 0 25 0 25 59 0 59"></polygon>
+                        <polygon id="l-fingertips" stroke="#979797" fill="#9013FE" transform="translate(87.246933, 137.954077) rotate(15.000000) translate(-87.246933, -137.954077) " points="20.2469333 118.954077 154.246933 118.954077 154.246933 156.954077 20.2469333 156.954077"></polygon>
+                        <polygon id="l-fingertip-pinky" stroke="#979797" fill="#9013FE" transform="translate(118.862709, 124.659811) rotate(15.000000) translate(-118.862709, -124.659811) " points="96.8627092 104.659811 140.862709 104.659811 140.862709 144.659811 96.8627092 144.659811"></polygon>
+                        <polygon id="l-fingers" stroke="#979797" fill="#9013FE" transform="translate(80.000000, 106.000000) rotate(15.000000) translate(-80.000000, -106.000000) " points="13 53 147 53 147 159 13 159"></polygon>
+                    </g>
+
                     <rect id="whole-left-hand" stroke="#979797" stroke-width="1" fill="#9013FE" transform="translate(115.049608, 928.245791) rotate(21.000000) translate(-115.049608, -928.245791) " x="29.0496078" y="831.245791" width="172" height="194"></rect>
                     <rect id="whole-right-hand" stroke="#979797" stroke-width="1" fill="url(#linearGradient-ntqvs4m54k-3)" transform="translate(725.049608, 926.245791) rotate(-19.000000) translate(-725.049608, -926.245791) " x="639.049608" y="829.245791" width="172" height="194"></rect>
                     <rect id="r-bicep" stroke="#979797" stroke-width="1" fill="#D8D8D8" x="556.058224" y="472" width="96" height="106"></rect>
@@ -322,6 +346,10 @@ server <- function(input, output) {
                     <rect id="r-forearm" stroke="#979797" stroke-width="1" fill="#CCCBFE" transform="translate(700.451407, 834.364740) scale(1, -1) rotate(14.000000) translate(-700.451407, -834.364740) " x="614.451407" y="632.36474" width="172" height="404"></rect>
                     <path d="M106.779038,783.351432 C130.245527,728.237035 174.178321,689.734355 204.905681,697.35329 C235.63304,704.972225 241.519139,755.827639 218.05265,810.942037 C210.616718,828.406384 201.125776,844.202757 190.651163,857.392236 L93.9060069,827.561807 C95.9858281,813.716388 100.244366,798.699041 106.779038,783.351432 Z" id="Left-Low-forearm" stroke="#979797" stroke-width="1" fill="#6968FF"></path>
                     <path d="M602.779038,786.933121 C626.245527,731.818724 670.178321,693.316044 700.905681,700.934979 C731.63304,708.553914 737.519139,759.409328 714.05265,814.523726 C706.616718,831.988073 697.125776,847.784446 686.651163,860.973925 L589.906007,831.143496 C591.985828,817.298077 596.244366,802.28073 602.779038,786.933121 Z" id="Right-Low-forearm" stroke="#979797" stroke-width="1" fill="#6B65FF" transform="translate(659.165758, 780.473819) rotate(-49.000000) translate(-659.165758, -780.473819) "></path>
+                    <path d="M350.21097,48.3122073 C358.911937,34.8033753 365.333412,26.9238226 369.475394,24.6735494 C390.556796,13.2203571 408.511709,18.3033508 418.820054,18.3033508 C428.038621,18.3033508 447.337032,15.5139697 464.697296,24.6735494 C469.761009,27.3452535 477.320029,35.0911091 487.374353,47.9111162 L487.374311,47.9111497 C488.430122,49.2577942 489.026316,50.9074984 489.075337,52.6179914 C490.063976,87.5617886 490.038836,112.693844 489,128.014154 C487.947259,143.539534 485.171601,159.045156 480.673026,174.531022 L480.672653,174.530914 C480.567881,174.891467 480.437856,175.244197 480.283543,175.586488 C465.936942,207.388715 445.500367,223.290203 418.972158,223.290203 C392.46023,223.290203 371.059436,207.408228 354.769776,175.644277 L354.769258,175.644542 C354.570781,175.257209 354.404244,174.854324 354.271303,174.4399 C348.895454,157.673554 345.904991,142.198264 345.299525,128.014154 C344.697462,113.909786 345.919322,88.564462 348.965105,51.978181 L348.965094,51.9781801 C349.074141,50.6726738 349.502126,49.4139236 350.21145,48.3125163 Z" id="face" fill="#D8D8D8"></path>
+                    <path d="M418.058224,194 C455.613587,194 486.058224,166.913227 486.058224,133.5 C486.058224,120.366612 494.048385,95.7974197 486.058224,85.8795454 C473.720266,70.5649211 440.852093,73 418.058224,73 C396.338879,73 366.918042,68.5606816 354.468746,82.664115 C345.391709,92.947217 350.058224,119.410601 350.058224,133.5 C350.058224,166.913227 380.502861,194 418.058224,194 Z" id="innerFace" fill="#4617A8"></path>
+                    <ellipse id="lips" fill="#D8D8D8" cx="416.5" cy="181" rx="25.5" ry="12"></ellipse>
+                    <rect id="toes" fill="#D8D8D8" x="234" y="1750" width="370" height="48"></rect>
                 </g>
             </g>
         </g>
@@ -337,6 +365,8 @@ server <- function(input, output) {
                 stroke: black;
                 stroke-width: 3;
             }
+            
+            
         ',
 
         styles 
@@ -344,7 +374,7 @@ server <- function(input, output) {
         , '    
             
         /* You can still add custom styles here */
-
+        #Pregnancy-Abdomen { display:none; }
 
         </style>
         <script>
