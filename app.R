@@ -26,7 +26,7 @@ ui <- fluidPage(
             checkboxGroupInput("biometrics", 
                                "Biometrics:",
                                c(
-                                 "Heart monitoring"
+                                 "Heart monitoring" = "heart-monitor"
                                )
             ),
             # checkboxGroupInput("dataCollection", 
@@ -57,7 +57,18 @@ ui <- fluidPage(
             #             min = 1,
             #             max = 50,
             #             value = 30),
-            checkboxInput("touchInteractive", "Should accept touch gestures", FALSE)
+            checkboxGroupInput("input", 
+                               "Input:",
+                               c(
+                                   "Touch gestures" = "touch"
+                               )
+            ),
+           checkboxGroupInput("output", 
+                              "Output:",
+                              c(
+                                  "Haptic display" = "haptic"
+                              )
+           )
         ),
 
         # Show a plot of the generated distribution
@@ -82,24 +93,112 @@ server <- function(input, output) {
 
         
         ## -- Hide or Show the regions for the data collection 
-        wristVisibility = feetVisibility = headVisibility = "hidden"
-        bicepVisibility = chestHeartVisibility = thighsVisibility = earsVisibility = fingertipsVisibility = "hidden"  
-        
-        footColor = wristColor = headColor = bicepColor = chestHeartColor = thighsColor = earsColor = fingertipsColor = wearableColor   
-        if ("Heart monitoring" %in% input$biometrics) {
-            bicepVisibility = chestHeartVisibility = thighsVisibility = earsVisibility = fingertipsVisibility = "visible"    
+
+        parts = c(
+                "head",
+                "ears",
+                "chestHeart",
+                "bicep",
+                "forearm",
+                "forearmLow",
+                "wrist",
+                "wholeHand",
+                "fingers",
+                "fingertips",
+                "thighs",
+                "feet",
+                "pregAb"
+                )
+        partsSelector = c(
+            "#Head",
+            "#l-ear, #r-ear",
+            "#chest-heart-monitoring",
+            "#r-bicep, #l-bicep",
+            "#r-forearm, #l-forearm",
+            "#Right-Low-forearm, #Left-Low-forearm",
+            "#wrist-r, #wrist-l",
+            "#whole-right-hand, #whole-left-hand",
+            "#r-fingers, #l-fingers",
+            "#r-fingertips, #l-fingertips",
+            "#r-thigh, #l-thigh",
+            "#foot-l, #foot-r",
+            "#Pregnancy-Abdomen"
+            )
+
+        bodyData = data.frame()
+
+        ## Set everything to visible at first
+        index = 1;
+        for (i in parts) {
+            bodyData[i, "visibility"] = "visible"
+            bodyData[i, "color"] = wearableColor
+            bodyData[i, "CSSSelector"] = partsSelector[index]
+            index = index + 1;
         }
-        else if (length(input$biometrics) < 1) {
-            wristVisibility = feetVisibility = headVisibility = "visible"
+
+        hideAll = function() {
+            print("Hidding..")
+            for (i in parts) {
+                bodyData[i, "visibility"] = "hidden"
+            }
+            return(bodyData)
+        } 
+
+        ## Inclusion 
+        partsToShow = parts
+        
+        if (length(input$biometrics) < 1) {
+            
+            # partsToShow = intersect(partsToShow, c(
+            #     "wrist", 
+            #     "feet",
+            #     "head"
+            # ));
          
         }
+        else if ("heart-monitor" %in% input$biometrics) {
+            bodyData = hideAll()    
+
+            partsToShow = intersect(partsToShow, c(
+                "ears",
+                "chestHeart",
+                "bicep", 
+                "wrist",
+                "fingertips",
+                "thighs"
+            ));
+            
+        }
+         
+        
+        if ("haptic" %in% input$output) {
+            
+            partsToShow = intersect(partsToShow, c(
+                "face",
+                "innerFace",
+                "lips",
+
+                ## This is probably too limiting.. SHoulders?
+                "forearm", 
+                "forearmLow",
+                "wholeHand",
+                "fingers",
+
+                "footsoles",
+                "toes"
+            ));
+        }
+        
+        bodyData = hideAll();
+        bodyData[partsToShow, "visibility"] = "visible";
+        
+        ## Exclusion
         
         ## If it accepts touch interactions..
-        if (input$touchInteractive) {
+        if ("touch" %in% input$input) {
             ## .. hide the thighs and breast area
-            thighsVisibility = "hidden"
+            bodyData[c("thighs", "pregAb", "chestHeart"), "visibility"] = "hidden"
             
-            chestHeartVisibility = "hidden"
         }
         
         ## Default set, no data collection just a wearable
@@ -168,6 +267,16 @@ server <- function(input, output) {
         
         ## -- Color the regions --
         
+        ## -- Compose the styles to be output --
+        styles = ""
+        print(bodyData)
+        for ( i in parts) {
+            styles = paste(styles, paste(
+                bodyData[i, "CSSSelector"],
+                "{ visibility:", bodyData[i, "visibility"], ";fill:", bodyData[i, "color"], ";  }"
+                )
+            )
+        }
         
         ## To get the SVG, Copy SVG Code from "COPY MY SVG" and paste below.
         ## 1. Wrap the body <path> in a <g>.
@@ -222,17 +331,21 @@ server <- function(input, output) {
         ','
         <style>
             svg { height: 90vh; }
-            #Head { visibility:', headVisibility, ';fill:', headColor, ';  }
-        
-            #l-ear, #r-ear { visibility:', earsVisibility, ';fill:', earsColor, ';  }
+
+            /* To ensure I can see things that might be filled transparently */
+            ellipse, rect, path {
+                stroke: black;
+                stroke-width: 3;
+            }
+        ',
+
+        styles 
+
+        , '    
             
-            #chest-heart-monitoring { visibility:', chestHeartVisibility, ';fill:', chestHeartColor, ';  }
-        
-            #r-bicep, #l-bicep { visibility:', bicepVisibility, ';fill:', bicepColor, ';  }
-            
-            #r-thigh, #l-thigh { visibility:', thighsVisibility, ';fill:', thighsColor, ';  }
-            
-            #foot-l, #foot-r { visibility:', feetVisibility, ';fill:', footColor, ';  }
+        /* You can still add custom styles here */
+
+
         </style>
         <script>
         /* What follows is an attempt to automate those manual steps to add new SVG
@@ -260,6 +373,10 @@ server <- function(input, output) {
            */
         </script>
         ')))
+        
+    })
+    
+    output$styles = renderUI({
         
     })
 }
