@@ -305,7 +305,7 @@ server <- function(input, output) {
             svg { height: 90vh; }
 
             /* To ensure I can see things that might be filled transparently */
-            rect, path {
+            ellipse, rect, path {
                 stroke: black;
                 stroke-width: 3;
             }
