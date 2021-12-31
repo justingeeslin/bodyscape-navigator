@@ -103,7 +103,8 @@ server <- function(input, output) {
                 "forearmLow",
                 "wrist",
                 "wholeHand",
-                # "fingertips",
+                "fingers",
+                "fingertips",
                 "thighs",
                 "feet",
                 "pregAb"
@@ -117,6 +118,8 @@ server <- function(input, output) {
             "#Right-Low-forearm, #Left-Low-forearm",
             "#wrist-r, #wrist-l",
             "#whole-right-hand, #whole-left-hand",
+            "#r-fingers, #l-fingers",
+            "#r-fingertips, #l-fingertips",
             "#r-thigh, #l-thigh",
             "#foot-l, #foot-r",
             "#Pregnancy-Abdomen"
