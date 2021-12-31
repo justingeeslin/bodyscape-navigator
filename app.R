@@ -51,7 +51,7 @@ ui <- fluidPage(
                         "Weight (lbs):",
                         min = 0.1,
                         max = 20,
-                        value = 2.5),
+                        value = 0.1),
             # sliderInput("size",
             #             "Size (cm):",
             #             min = 1,
