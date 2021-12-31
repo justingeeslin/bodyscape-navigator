@@ -26,7 +26,7 @@ ui <- fluidPage(
             checkboxGroupInput("biometrics", 
                                "Biometrics:",
                                c(
-                                 "Heart monitoring"
+                                 "Heart monitoring" = "heart-monitor"
                                )
             ),
             # checkboxGroupInput("dataCollection", 
@@ -60,7 +60,7 @@ ui <- fluidPage(
             checkboxGroupInput("input", 
                                "Input:",
                                c(
-                                   "Should accept touch gestures" = "touch"
+                                   "Touch gestures" = "touch"
                                )
             ),
            checkboxGroupInput("output", 
@@ -93,24 +93,84 @@ server <- function(input, output) {
 
         
         ## -- Hide or Show the regions for the data collection 
-        wristVisibility = feetVisibility = headVisibility = "hidden"
-        bicepVisibility = chestHeartVisibility = thighsVisibility = earsVisibility = fingertipsVisibility = "hidden"  
+
+        parts = c(
+                "head",
+                "ears",
+                "chestHeart",
+                "bicep",
+                "forearm",
+                "forearmLow",
+                "wrist",
+                "wholeHand",
+                # "fingertips",
+                "thighs",
+                "feet",
+                "pregAb"
+                )
+        partsSelector = c(
+            "#Head",
+            "#l-ear, #r-ear",
+            "#chest-heart-monitoring",
+            "#r-bicep, #l-bicep",
+            "#r-forearm, #l-forearm",
+            "#Right-Low-forearm, #Left-Low-forearm",
+            "#wrist-r, #wrist-l",
+            "#whole-right-hand, #whole-left-hand",
+            "#r-thigh, #l-thigh",
+            "#foot-l, #foot-r",
+            "#Pregnancy-Abdomen"
+            )
+
+        bodyData = data.frame()
+
+        ## Set everything to visible at first
+        index = 1;
+        for (i in parts) {
+            bodyData[i, "visibility"] = "visible"
+            bodyData[i, "color"] = wearableColor
+            bodyData[i, "CSSSelector"] = partsSelector[index]
+            index = index + 1;
+        }
+
+        hideAll = function() {
+            print("Hidding..")
+            for (i in parts) {
+                bodyData[i, "visibility"] = "hidden"
+            }
+            return(bodyData)
+        } 
+
         
-        footColor = wristColor = headColor = bicepColor = chestHeartColor = thighsColor = earsColor = fingertipsColor = wearableColor   
-        if ("Heart monitoring" %in% input$biometrics) {
-            bicepVisibility = chestHeartVisibility = thighsVisibility = earsVisibility = fingertipsVisibility = "visible"    
+        if ("heart-monitor" %in% input$biometrics) {
+            bodyData = hideAll()    
+
+            bodyData[c(
+                "bicep", 
+                "thighs",
+                "ears",
+                "fingertips",
+                "chestHeart"
+                ), "visibility"] = "visible";
+            
         }
         else if (length(input$biometrics) < 1) {
             wristVisibility = feetVisibility = headVisibility = "visible"
          
         }
         
+        
+        if ("haptic" %in% input$output) {
+            bodyData = hideAll() 
+            
+            ## This is probably too limiting..
+            bodyData[c("forearm", "forearmLow", "chestHeart"), "visibility"] = "visible"
+        }
         ## If it accepts touch interactions..
         if ("touch" %in% input$input) {
             ## .. hide the thighs and breast area
-            thighsVisibility = "hidden"
+            bodyData[c("thighs", "pregAb", "chestHeart"), "visibility"] = "hidden"
             
-            chestHeartVisibility = "hidden"
         }
         
         ## Default set, no data collection just a wearable
@@ -179,6 +239,16 @@ server <- function(input, output) {
         
         ## -- Color the regions --
         
+        ## -- Compose the styles to be output --
+        styles = ""
+        print(bodyData)
+        for ( i in parts) {
+            styles = paste(styles, paste(
+                bodyData[i, "CSSSelector"],
+                "{ visibility:", bodyData[i, "visibility"], ";fill:", bodyData[i, "color"], ";  }"
+                )
+            )
+        }
         
         ## To get the SVG, Copy SVG Code from "COPY MY SVG" and paste below.
         ## 1. Wrap the body <path> in a <g>.
@@ -233,17 +303,21 @@ server <- function(input, output) {
         ','
         <style>
             svg { height: 90vh; }
-            #Head { visibility:', headVisibility, ';fill:', headColor, ';  }
-        
-            #l-ear, #r-ear { visibility:', earsVisibility, ';fill:', earsColor, ';  }
+
+            /* To ensure I can see things that might be filled transparently */
+            rect, path {
+                stroke: black;
+                stroke-width: 3;
+            }
+        ',
+
+        styles 
+
+        , '    
             
-            #chest-heart-monitoring { visibility:', chestHeartVisibility, ';fill:', chestHeartColor, ';  }
-        
-            #r-bicep, #l-bicep { visibility:', bicepVisibility, ';fill:', bicepColor, ';  }
-            
-            #r-thigh, #l-thigh { visibility:', thighsVisibility, ';fill:', thighsColor, ';  }
-            
-            #foot-l, #foot-r { visibility:', feetVisibility, ';fill:', footColor, ';  }
+        /* You can still add custom styles here */
+
+
         </style>
         <script>
         /* What follows is an attempt to automate those manual steps to add new SVG
@@ -271,6 +345,10 @@ server <- function(input, output) {
            */
         </script>
         ')))
+        
+    })
+    
+    output$styles = renderUI({
         
     })
 }
