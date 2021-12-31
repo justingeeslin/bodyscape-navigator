@@ -169,7 +169,10 @@ server <- function(input, output) {
         ## -- Color the regions --
         
         
-        ## To get the SVG, Copy SVG Code from "COPY MY SVG" and paste
+        ## To get the SVG, Copy SVG Code from "COPY MY SVG" and paste below.
+        ## 1. Wrap the body <path> in a <g>.
+        ## 2. Move the id attr from the path to the wrapping g.
+        ## 3. Move the transforms on #Shape to the wrapping g.
         
         return(HTML(paste0(
         '
@@ -232,7 +235,7 @@ server <- function(input, output) {
             #foot-l, #foot-r { visibility:', feetVisibility, ';fill:', footColor, ';  }
         </style>
         <script>
-        /*
+        /* What follows is an attempt to automate those manual steps to add new SVG
            bodyPath = $("path:first");
             
             bodyPath
