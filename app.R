@@ -144,31 +144,56 @@ server <- function(input, output) {
             return(bodyData)
         } 
 
+        ## Inclusion 
+        partsToShow = parts
         
-        if ("heart-monitor" %in% input$biometrics) {
-            bodyData = hideAll()    
-
-            bodyData[c(
-                "bicep", 
-                "thighs",
-                "ears",
-                "fingertips",
-                "chestHeart"
-                ), "visibility"] = "visible";
+        if (length(input$biometrics) < 1) {
             
-        }
-        else if (length(input$biometrics) < 1) {
-            wristVisibility = feetVisibility = headVisibility = "visible"
+            # partsToShow = intersect(partsToShow, c(
+            #     "wrist", 
+            #     "feet",
+            #     "head"
+            # ));
          
         }
-        
+        else if ("heart-monitor" %in% input$biometrics) {
+            bodyData = hideAll()    
+
+            partsToShow = intersect(partsToShow, c(
+                "ears",
+                "chestHeart",
+                "bicep", 
+                "wrist",
+                "fingertips",
+                "thighs"
+            ));
+            
+        }
+         
         
         if ("haptic" %in% input$output) {
-            bodyData = hideAll() 
             
-            ## This is probably too limiting..
-            bodyData[c("forearm", "forearmLow", "chestHeart"), "visibility"] = "visible"
+            partsToShow = intersect(partsToShow, c(
+                "face",
+                "innerFace",
+                "lips",
+
+                ## This is probably too limiting.. SHoulders?
+                "forearm", 
+                "forearmLow",
+                "wholeHand",
+                "fingers",
+
+                "footsoles",
+                "toes"
+            ));
         }
+        
+        bodyData = hideAll();
+        bodyData[partsToShow, "visibility"] = "visible";
+        
+        ## Exclusion
+        
         ## If it accepts touch interactions..
         if ("touch" %in% input$input) {
             ## .. hide the thighs and breast area
